@@ -5,54 +5,64 @@
 <title>Radj Shashlik</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 
 <style>
-body{margin:0;font-family:Segoe UI,sans-serif;background:#f5f7f6}
-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#2f7d32;color:#fff;flex-wrap:wrap}
-header img{height:40px;max-height:40px;width:auto;flex-shrink:0}
-header h2{margin:0;font-size:1.2em;white-space:nowrap}
+body{margin:0;font-family:Segoe UI,sans-serif;background:#f5f7f6;-webkit-tap-highlight-color: transparent;}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#2f7d32;color:#fff;flex-wrap:wrap;position: sticky;top:0;z-index:100;}
+header img{height:40px;max-height:40px;width:auto;flex-shrink:0;transition:transform .3s;}
+header img:hover{transform:scale(1.1);}
+header h2{margin:0;font-size:1.2em;white-space:nowrap;}
+#langSelect{margin-left:auto;background:#fff;color:#2f7d32;border:none;padding:6px 10px;border-radius:8px;font-weight:600;cursor:pointer;}
 
-.tabs{
-display:flex;gap:8px;padding:8px 10px;background:#fff;overflow-x:auto;scroll-behavior:smooth
-}
-.tabs button{
-border:none;padding:8px 14px;border-radius:20px;background:#e0e0e0;font-weight:600;transition:.25s;white-space:nowrap;cursor:pointer;flex-shrink:0;
-}
-.tabs button.active{background:#2f7d32;color:#fff;transform:scale(1.05)}
+.tabs{display:flex;gap:8px;padding:8px 10px;background:#fff;overflow-x:auto;scroll-behavior:smooth;}
+.tabs button{border:none;padding:8px 14px;border-radius:20px;background:#e0e0e0;font-weight:600;transition:.25s;white-space:nowrap;cursor:pointer;flex-shrink:0;}
+.tabs button.active{background:#2f7d32;color:#fff;transform:scale(1.05);}
 
-.container{padding:12px;padding-bottom:180px;animation:fade .3s}
-.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.container{padding:12px;padding-bottom:200px;animation:fade .3s;}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);animation:slideUp .35s;position:relative;overflow:hidden;transition:transform .2s;}
+.card:hover{transform:translateY(-4px);}
+.card h3{margin:6px 0;font-size:14px;line-height:1.2;}
+.price{color:#2f7d32;font-weight:600;font-size:13px;}
+.card button{width:100%;margin-top:6px;background:#2f7d32;color:#fff;border:none;padding:6px;border-radius:8px;transition:.2s;cursor:pointer;font-size:14px;}
+.card button:active{transform:scale(.95);}
 
-.card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);animation:slideUp .35s}
-.card h3{margin:6px 0;font-size:14px}
-.price{color:#2f7d32;font-weight:600;font-size:13px}
-.card button{width:100%;margin-top:6px;background:#2f7d32;color:#fff;border:none;padding:6px;border-radius:8px;transition:.2s;cursor:pointer;font-size:14px}
-.card button:active{transform:scale(.95)}
+.cart{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px;box-shadow:0 -4px 10px rgba(0,0,0,.15);z-index:1000;display:flex;flex-direction:column;}
+.cart-items div{display:flex;justify-content:space-between;align-items:center;margin:6px 0;flex-wrap:wrap;}
+.qty button{width:26px;height:26px;border:none;border-radius:50%;background:#e0e0e0;cursor:pointer;margin-left:4px;}
 
-.cart{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px;box-shadow:0 -4px 10px rgba(0,0,0,.15);z-index:1000;display:flex;flex-direction:column}
-.cart-items div{display:flex;justify-content:space-between;align-items:center;margin:6px 0;flex-wrap:wrap}
-.qty button{width:26px;height:26px;border:none;border-radius:50%;background:#e0e0e0;cursor:pointer;margin-left:4px}
+button.main{background:#2f7d32;color:#fff;border:none;padding:10px;border-radius:10px;width:100%;margin-top:6px;cursor:pointer;font-size:15px;}
 
-button.main{background:#2f7d32;color:#fff;border:none;padding:10px;border-radius:10px;width:100%;margin-top:6px;cursor:pointer;font-size:15px}
-
-#confirm{display:none}
-select,input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #ccc;font-size:14px}
-#map{height:180px;border-radius:12px;margin-top:8px;display:none}
+#confirm{display:none;}
+select,input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
 
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f7d32;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;z-index:2000}
-.toast.show{opacity:1}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) scale(0.9);background:#2f7d32;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;z-index:2000;font-weight:600;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) scale(1);}
+
+/* Responsive */
+@media(max-width:480px){
+  .card h3{font-size:13px;}
+  .price{font-size:12px;}
+  .card button{font-size:13px;padding:5px;}
+  button.main{font-size:14px;padding:8px;}
+  #langSelect{padding:4px 6px;font-size:13px;}
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<img id="logo" alt="Radj Shashlik Logo">
-<h2>Radj Shashlik</h2>
+<img id="logo" src="https://jocular-sprite-ccad97.netlify.app/logo.png" alt="Radj Shashlik Logo">
+<h2 id="title">Radj Shashlik</h2>
+<select id="langSelect" onchange="setLanguage(this.value)">
+    <option value="ru">RU</option>
+    <option value="uz">UZ</option>
+    <option value="en">EN</option>
+</select>
 </header>
 
 <div class="tabs" id="tabs"></div>
@@ -62,159 +72,124 @@ select,input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px
 </div>
 
 <div class="container" id="confirm">
-<h3>🧾 Подтверждение заказа</h3>
-
-<select id="deliveryType" onchange="toggleMap()">
-<option value="Доставка">📍 Доставка</option>
-<option value="Самовывоз">🏠 Самовывоз</option>
-</select>
-
-<input id="phone" placeholder="📞 Телефон">
-
-<div id="map"></div>
-
+<h3 id="confirmTitle"></h3>
+<select id="deliveryType" onchange="toggleAddress()"></select>
+<input id="phone" placeholder="">
+<input id="addressInput" placeholder="" style="display:none;margin-top:6px;">
 <div id="confirmItems"></div>
-<b>Итого: <span id="confirmTotal">0</span> сум</b>
-
-<button class="main" onclick="sendOrder()">✅ Подтвердить заказ</button>
-<button class="main" onclick="back()">⬅️ Назад</button>
+<b id="totalLabel"><span id="confirmTotal">0</span></b>
+<button class="main" id="confirmBtn" onclick="sendOrder()"></button>
+<button class="main" id="backBtn" onclick="back()"></button>
 </div>
 
 <div class="cart">
 <div class="cart-items" id="cartItems"></div>
-<b>Итого: <span id="total">0</span> сум</b>
-<button class="main" onclick="openConfirm()">Оформить заказ</button>
+<b id="cartTotalLabel"><span id="total">0</span></b>
+<button class="main" id="checkoutBtn" onclick="openConfirm()"></button>
 </div>
 
-<div class="toast" id="toast">Товар добавлен ✔</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const tg = Telegram.WebApp;
 tg.expand();
 
-// Гарантированная загрузка логотипа
-document.getElementById("logo").src = "/logo.png"; // PNG должен быть в корне /public на Vercel
+let lang='ru';
+let currentCatRU='Шашлык';
+const TEXTS={
+  ru:{tabs:["Шашлык","Салаты","Первые блюда","Национальные блюда","Блюда на гриле","Хлеб","Напитки"],delivery:["📍 Доставка","🏠 Самовывоз"],phone:"📞 Телефон",address:"🏠 Адрес доставки",confirmTitle:"🧾 Подтверждение заказа",confirmBtn:"✅ Подтвердить заказ",backBtn:"⬅️ Назад",checkoutBtn:"Добавить в корзину",toast:"Товар добавлен ✔",total:"Итого: "},
+  uz:{tabs:["Shashlik","Salatlar","Birinchi taom","Milliy taom","Grilda taomlar","Non","Ichimliklar"],delivery:["📍 Yetkazib berish","🏠 Olib ketish"],phone:"📞 Telefon",address:"🏠 Yetkazib berish manzili",confirmTitle:"🧾 Buyurtma tasdiqlash",confirmBtn:"✅ Buyurtmani tasdiqlash",backBtn:"⬅️ Orqaga",checkoutBtn:"Savatchaga qo'shish",toast:"Mahsulot qo'shildi ✔",total:"Jami: "},
+  en:{tabs:["Shashlik","Salads","First courses","National dishes","Grill dishes","Bread","Drinks"],delivery:["📍 Delivery","🏠 Pickup"],phone:"📞 Phone",address:"🏠 Delivery address",confirmTitle:"🧾 Order Confirmation",confirmBtn:"✅ Confirm Order",backBtn:"⬅️ Back",checkoutBtn:"Add to cart",toast:"Item added ✔",total:"Total: "}
+};
 
-/* КАТЕГОРИИ */
-const categories=["Шашлык","Салаты","Первые блюда","Национальные блюда","Блюда на гриле","Хлеб","Напитки"];
-
-/* БЛЮДА */
-const products=[
-{cat:"Шашлык",name:"Шашлык говядина",price:65000},
-{cat:"Шашлык",name:"Шашлык курица",price:45000},
-{cat:"Салаты",name:"Салат Цезарь",price:45000},
-{cat:"Первые блюда",name:"Шурпа",price:50000},
-{cat:"Национальные блюда",name:"Плов",price:55000},
-{cat:"Блюда на гриле",name:"Стейк говяжий",price:95000},
-{cat:"Хлеб",name:"Лепёшка",price:6000},
-{cat:"Напитки",name:"Чай",price:5000}
+const PRODUCTS = [
+{catRU:"Шашлык",catUZ:"Shashlik",catEN:"Shashlik",nameRU:"Шашлык говядина",nameUZ:"Mol go‘shti shashlik",nameEN:"Beef Shashlik",price:65000},
+{catRU:"Шашлык",catUZ:"Shashlik",catEN:"Shashlik",nameRU:"Шашлык курица",nameUZ:"Tovuq shashlik",nameEN:"Chicken Shashlik",price:45000},
+{catRU:"Салаты",catUZ:"Salatlar",catEN:"Salads",nameRU:"Салат Цезарь",nameUZ:"Sezar salat",nameEN:"Caesar Salad",price:45000},
+{catRU:"Первые блюда",catUZ:"Birinchi taom",catEN:"First courses",nameRU:"Шурпа",nameUZ:"Shurpa",nameEN:"Shurpa",price:50000},
+{catRU:"Национальные блюда",catUZ:"Milliy taom",catEN:"National dishes",nameRU:"Плов",nameUZ:"Palov",nameEN:"Pilaf",price:55000},
+{catRU:"Блюда на гриле",catUZ:"Grilda taomlar",catEN:"Grill dishes",nameRU:"Стейк говяжий",nameUZ:"Mol go‘shti steak",nameEN:"Beef Steak",price:95000},
+{catRU:"Хлеб",catUZ:"Non",catEN:"Bread",nameRU:"Лепёшка",nameUZ:"Lepeshka",nameEN:"Flatbread",price:6000},
+{catRU:"Напитки",catUZ:"Ichimliklar",catEN:"Drinks",nameRU:"Чай",nameUZ:"Choy",nameEN:"Tea",price:5000}
 ];
 
-let cart={},currentCat=categories[0];
-let address="";
+let cart={};
+let currentCat=currentCatRU;
 
-/* ТАБЫ */
+function setLanguage(l){
+  lang=l;
+  // Сохраняем RU категорию
+  let catObj=PRODUCTS.find(p=>{
+    if(l==='ru') return p.catRU===currentCat;
+    if(l==='uz') return p.catUZ===currentCat;
+    return p.catEN===currentCat;
+  });
+  currentCatRU=catObj.catRU;
+  if(l==='ru') currentCat=currentCatRU;
+  if(l==='uz') currentCat=catObj.catUZ;
+  if(l==='en') currentCat=catObj.catEN;
+
+  renderTabs();
+  renderProducts();
+
+  document.getElementById("deliveryType").innerHTML='';
+  TEXTS[lang].delivery.forEach(d=>{const opt=document.createElement("option"); opt.text=d; opt.value=d; document.getElementById("deliveryType").appendChild(opt);});
+  document.getElementById("phone").placeholder=TEXTS[lang].phone;
+  document.getElementById("addressInput").placeholder=TEXTS[lang].address;
+  document.getElementById("confirmTitle").innerText=TEXTS[lang].confirmTitle;
+  document.getElementById("confirmBtn").innerText=TEXTS[lang].confirmBtn;
+  document.getElementById("backBtn").innerText=TEXTS[lang].backBtn;
+  document.getElementById("checkoutBtn").innerText=TEXTS[lang].checkoutBtn;
+  document.getElementById("toast").innerText=TEXTS[lang].toast;
+  document.getElementById("cartTotalLabel").innerText=TEXTS[lang].total+' ';
+  document.getElementById("totalLabel").innerText=TEXTS[lang].total+' ';
+}
+
 function renderTabs(){
-const el=document.getElementById("tabs");
-el.innerHTML="";
-categories.forEach(c=>{
-    el.innerHTML+=`<button class="${c===currentCat?'active':''}" onclick="selectCat('${c}')">${c}</button>`;
-});
+  const el=document.getElementById("tabs");el.innerHTML="";
+  let tabs=[];
+  if(lang==='ru') tabs=PRODUCTS.map(p=>p.catRU);
+  else if(lang==='uz') tabs=PRODUCTS.map(p=>p.catUZ);
+  else tabs=PRODUCTS.map(p=>p.catEN);
+  tabs=[...new Set(tabs)];
+  tabs.forEach(t=>{el.innerHTML+=`<button class="${t===currentCat?'active':''}" onclick="selectCat('${t}')">${t}</button>`;});
 }
-function selectCat(c){currentCat=c;renderTabs();renderProducts();}
 
-/* МЕНЮ */
+function selectCat(c){currentCat=c;renderTabs();renderProducts();let catObj=PRODUCTS.find(p=>{if(lang==='ru') return p.catRU===c; if(lang==='uz') return p.catUZ===c; return p.catEN===c;});if(catObj) currentCatRU=catObj.catRU;}
+
 function renderProducts(){
-const el=document.getElementById("products");
-el.innerHTML="";
-products.filter(p=>p.cat===currentCat).forEach(p=>{
-    el.innerHTML+=`<div class="card">
-<h3>${p.name}</h3>
-<div class="price">${p.price} сум</div>
-<button onclick="add('${p.name}',${p.price})">Добавить</button>
-</div>`;
-});
+  const el=document.getElementById("products");el.innerHTML="";
+  let prods=PRODUCTS.filter(p=>lang==='ru'?p.catRU===currentCat:lang==='uz'?p.catUZ===currentCat:p.catEN===currentCat);
+  prods.forEach(p=>{
+    const name=lang==='ru'?p.nameRU:lang==='uz'?p.nameUZ:p.nameEN;
+    const id='card-'+name.replace(/\s+/g,'');
+    el.innerHTML+=`<div class="card" id="${id}"><h3>${name}</h3><div class="price">${p.price} сум</div><button onclick="add('${name}',${p.price},'${id}')">${TEXTS[lang].checkoutBtn}</button></div>`;
+  });
 }
 
-/* КОРЗИНА */
-function add(n,p){cart[n]?cart[n].qty++:cart[n]={qty:1,price:p};renderCart();showToast();}
+function add(name,price,id){cart[name]?cart[name].qty++:cart[name]={qty:1,price};renderCart();showToast();}
 function plus(n){cart[n].qty++;renderCart();}
 function minus(n){cart[n].qty--;if(cart[n].qty<=0)delete cart[n];renderCart();}
-function renderCart(){
-const el=document.getElementById("cartItems");
-el.innerHTML="";
-let total=0;
-for(let n in cart){
-total+=cart[n].qty*cart[n].price;
-el.innerHTML+=`<div><span>${n} × ${cart[n].qty}</span>
-<span class="qty">
-<button onclick="minus('${n}')">−</button>
-<button onclick="plus('${n}')">+</button>
-</span></div>`;
-}
-document.getElementById("total").innerText=total;
-}
+function renderCart(){const el=document.getElementById("cartItems");el.innerHTML="";let total=0;for(let n in cart){total+=cart[n].qty*cart[n].price;el.innerHTML+=`<div><span>${n} × ${cart[n].qty}</span><span class="qty"><button onclick="minus('${n}')">−</button><button onclick="plus('${n}')">+</button></span></div>`;}document.getElementById("total").innerText=total;document.getElementById("confirmTotal").innerText=total;}
 
-/* ТОАСТ */
-function showToast(){
-const t=document.getElementById("toast");
-t.classList.add("show");
-setTimeout(()=>t.classList.remove("show"),1200);
-}
+function showToast(){const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1200);}
 
-/* ОФОРМЛЕНИЕ */
-function openConfirm(){
-if(!Object.keys(cart).length){alert("Корзина пуста");return}
-document.getElementById("menu").style.display="none";
-document.getElementById("confirm").style.display="block";
-renderConfirm();
-toggleMap();
-}
-function back(){
-document.getElementById("confirm").style.display="none";
-document.getElementById("menu").style.display="block";
-}
-function renderConfirm(){
-let el=document.getElementById("confirmItems");
-el.innerHTML="";
-let total=0;
-for(let n in cart){
-el.innerHTML+=`<div>${n} × ${cart[n].qty}</div>`;
-total+=cart[n].qty*cart[n].price;
-}
-document.getElementById("confirmTotal").innerText=total;
-}
+function openConfirm(){if(!Object.keys(cart).length){alert(TEXTS[lang].checkoutBtn);return;}document.getElementById("menu").style.display="none";document.getElementById("confirm").style.display="block";toggleAddress();}
+function back(){document.getElementById("confirm").style.display="none";document.getElementById("menu").style.display="block";}
+function toggleAddress(){document.getElementById("addressInput").style.display=document.getElementById("deliveryType").value===TEXTS[lang].delivery[0]?"block":"none";}
 
-/* ДОСТАВКА */
-function toggleMap(){
-document.getElementById("map").style.display=document.getElementById("deliveryType").value==="Доставка"?"block":"none";
-}
-
-/* ОТПРАВКА */
 function sendOrder(){
-const phone=document.getElementById("phone").value;
-if(!phone){alert("Введите телефон");return;}
-const items = Object.keys(cart).map(name=>({name,qty:cart[name].qty,price:cart[name].price}));
-const total = items.reduce((sum,i)=>sum+i.qty*i.price,0);
-tg.sendData(JSON.stringify({
-phone,
-delivery_type: document.getElementById("deliveryType").value,
-address,
-items,
-total
-}));
+  const phone=document.getElementById("phone").value;
+  const delivery=document.getElementById("deliveryType").value;
+  const addr=delivery===TEXTS[lang].delivery[0]?document.getElementById("addressInput").value:"";
+  if(!phone){alert(TEXTS[lang].phone);return;}
+  if(delivery===TEXTS[lang].delivery[0] && !addr){alert(TEXTS[lang].address);return;}
+  const items=Object.keys(cart).map(n=>({name:n,qty:cart[n].qty,price:cart[n].price}));
+  const total=items.reduce((s,i)=>s+i.qty*i.price,0);
+  tg.sendData(JSON.stringify({phone,delivery_type:delivery,address:addr,items,total}));
 }
 
-/* КАРТА */
-ymaps.ready(()=>{
-const map=new ymaps.Map("map",{center:[41.31,69.28],zoom:12});
-map.events.add("click",e=>{address=e.get("coords").join(", ");});
-});
-
-/* ИНИЦИАЛИЗАЦИЯ */
-renderTabs();
-renderProducts();
-renderCart();
+setLanguage('ru');
 </script>
 
 </body>
