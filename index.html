@@ -25,13 +25,22 @@ border:none;padding:8px 14px;border-radius:20px;background:#e0e0e0;font-weight:6
 .container{padding:12px;padding-bottom:180px;animation:fade .3s}
 .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 
-.card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);animation:slideUp .35s}
+.card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);animation:slideUp .35s;transition:transform .2s}
 .card h3{margin:6px 0;font-size:14px}
 .price{color:#2f7d32;font-weight:600;font-size:13px}
 .card button{width:100%;margin-top:6px;background:#2f7d32;color:#fff;border:none;padding:6px;border-radius:8px;transition:.2s;cursor:pointer;font-size:14px}
 .card button:active{transform:scale(.95)}
+.card.added{animation:addBounce .4s}
 
-.cart{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px;box-shadow:0 -4px 10px rgba(0,0,0,.15);z-index:1000;display:flex;flex-direction:column}
+@keyframes addBounce{
+0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(1)}
+}
+
+.cart{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px;box-shadow:0 -4px 10px rgba(0,0,0,.15);z-index:1000;display:flex;flex-direction:column;opacity:0;transform:translateY(100%);transition:.3s}
+.cart.show{opacity:1;transform:translateY(0);}
+
 .cart-items div{display:flex;justify-content:space-between;align-items:center;margin:6px 0;flex-wrap:wrap}
 .qty button{width:26px;height:26px;border:none;border-radius:50%;background:#e0e0e0;cursor:pointer;margin-left:4px}
 
@@ -90,7 +99,7 @@ button.main{font-size:14px;padding:8px}
 <button class="main" onclick="back()">⬅️ Назад</button>
 </div>
 
-<div class="cart">
+<div class="cart" id="cart">
 <div class="cart-items" id="cartItems"></div>
 <b>Итого: <span id="total">0</span> сум</b>
 <button class="main" onclick="openConfirm()">Оформить заказ</button>
@@ -102,10 +111,7 @@ button.main{font-size:14px;padding:8px}
 const tg = Telegram.WebApp;
 tg.expand();
 
-/* КАТЕГОРИИ */
 const categories=["Шашлык","Салаты","Первые блюда","Национальные блюда","Блюда на гриле","Хлеб","Напитки"];
-
-/* БЛЮДА */
 const products=[
 {cat:"Шашлык",name:"Шашлык говядина",price:65000},
 {cat:"Шашлык",name:"Шашлык курица",price:45000},
@@ -117,8 +123,7 @@ const products=[
 {cat:"Напитки",name:"Чай",price:5000}
 ];
 
-let cart={},currentCat=categories[0];
-let address="";
+let cart={},currentCat=categories[0],address="";
 
 /* ТАБЫ */
 function renderTabs(){
@@ -128,7 +133,6 @@ categories.forEach(c=>{
 el.innerHTML+=`<button class="${c===currentCat?'active':''}" onclick="selectCat('${c}')">${c}</button>`;
 });
 }
-
 function selectCat(c){currentCat=c;renderTabs();renderProducts();}
 
 /* МЕНЮ */
@@ -136,7 +140,7 @@ function renderProducts(){
 const el=document.getElementById("products");
 el.innerHTML="";
 products.filter(p=>p.cat===currentCat).forEach(p=>{
-el.innerHTML+=`<div class="card">
+el.innerHTML+=`<div class="card" id="card-${p.name.replace(/\s/g,'')}">
 <h3>${p.name}</h3>
 <div class="price">${p.price} сум</div>
 <button onclick="add('${p.name}',${p.price})">Добавить</button>
@@ -145,7 +149,24 @@ el.innerHTML+=`<div class="card">
 }
 
 /* КОРЗИНА */
-function add(n,p){cart[n]?cart[n].qty++:cart[n]={qty:1,price:p};renderCart();showToast();}
+function add(n,p){
+cart[n]?cart[n].qty++:cart[n]={qty:1,price:p};
+renderCart();
+showToast();
+animateCard(n);
+document.getElementById("cart").classList.add("show");
+}
+
+function animateCard(name){
+const card=document.getElementById(`card-${name.replace(/\s/g,'')}`);
+if(card){
+card.classList.remove("added");
+void card.offsetWidth;
+card.classList.add("added");
+}
+
+}
+
 function plus(n){cart[n].qty++;renderCart();}
 function minus(n){cart[n].qty--;if(cart[n].qty<=0)delete cart[n];renderCart();}
 function renderCart(){
