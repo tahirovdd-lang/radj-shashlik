@@ -11,7 +11,6 @@ body{margin:0;font-family:Segoe UI,sans-serif;background:#f5f7f6}
 header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#2f7d32;color:#fff;flex-wrap:wrap}
 header img{height:40px;flex-shrink:0}
 header h2{margin:0;font-size:1.2em;white-space:nowrap}
-
 .lang-switch{margin-left:auto;display:flex;gap:6px}
 .lang-switch button{background:#fff;color:#2f7d32;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-weight:600}
 .lang-switch button.active{background:#2f7d32;color:#fff}
@@ -48,43 +47,43 @@ select,input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px
 <body>
 
 <header>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAABvN..." alt="Radj Shashlik Logo">
+<img src="/logo.png" alt="Radj Shashlik Logo">
 <h2 id="title">Radj Shashlik</h2>
 <div class="lang-switch">
-<button onclick="setLang('ru')" id="btn-ru" class="active">RU</button>
-<button onclick="setLang('uz')" id="btn-uz">UZ</button>
-<button onclick="setLang('en')" id="btn-en">EN</button>
+  <button onclick="setLang('ru')" id="btn-ru" class="active">RU</button>
+  <button onclick="setLang('uz')" id="btn-uz">UZ</button>
+  <button onclick="setLang('en')" id="btn-en">EN</button>
 </div>
 </header>
 
 <div class="tabs" id="tabs"></div>
 
 <div class="container" id="menu">
-<div class="products" id="products"></div>
+  <div class="products" id="products"></div>
 </div>
 
 <div class="container" id="confirm">
-<h3 id="confirmTitle">🧾 Подтверждение заказа</h3>
+  <h3 id="confirmTitle">🧾 Подтверждение заказа</h3>
 
-<select id="deliveryType">
-<option value="Доставка">📍 Доставка</option>
-<option value="Самовывоз">🏠 Самовывоз</option>
-</select>
+  <select id="deliveryType">
+    <option value="Доставка">📍 Доставка</option>
+    <option value="Самовывоз">🏠 Самовывоз</option>
+  </select>
 
-<input id="phone" placeholder="📞 Телефон">
-<input id="address" placeholder="🏠 Адрес">
+  <input id="phone" placeholder="📞 Телефон">
+  <input id="address" placeholder="🏠 Адрес">
 
-<div id="confirmItems"></div>
-<b>Итого: <span id="confirmTotal">0</span> сум</b>
+  <div id="confirmItems"></div>
+  <b>Итого: <span id="confirmTotal">0</span> сум</b>
 
-<button class="main" onclick="sendOrder()">✅ Подтвердить заказ</button>
-<button class="main" onclick="back()">⬅️ Назад</button>
+  <button class="main" onclick="sendOrder()">✅ Подтвердить заказ</button>
+  <button class="main" onclick="back()">⬅️ Назад</button>
 </div>
 
 <div class="cart">
-<div class="cart-items" id="cartItems"></div>
-<b>Итого: <span id="total">0</span> сум</b>
-<button class="main" onclick="openConfirm()">Оформить заказ</button>
+  <div class="cart-items" id="cartItems"></div>
+  <b>Итого: <span id="total">0</span> сум</b>
+  <button class="main" onclick="openConfirm()">Оформить заказ</button>
 </div>
 
 <div class="toast" id="toast">Товар добавлен ✔</div>
@@ -96,17 +95,17 @@ tg.expand();
 /* МУЛЬТИЯЗЫЧНОСТЬ */
 let lang = 'ru';
 const texts = {
-ru: {add:'Добавить',empty:'Корзина пуста',confirm:'Подтвердить заказ',phone:'📞 Телефон',address:'🏠 Адрес',delivery:'Доставка'},
-uz: {add:'Qo‘shish',empty:'Savatcha bo‘sh',confirm:'Buyurtmani tasdiqlash',phone:'📞 Telefon',address:'🏠 Manzil',delivery:'Yetkazib berish'},
-en: {add:'Add',empty:'Cart empty',confirm:'Confirm order',phone:'📞 Phone',address:'🏠 Address',delivery:'Delivery'}
+  ru: {add:'Добавить',empty:'Корзина пуста',confirm:'Подтвердить заказ',phone:'Введите телефон',address:'Введите адрес',delivery:'Доставка'},
+  uz: {add:'Qo‘shish',empty:'Savatcha bo‘sh',confirm:'Buyurtmani tasdiqlash',phone:'Telefon kiriting',address:'Manzil kiriting',delivery:'Yetkazib berish'},
+  en: {add:'Add',empty:'Cart empty',confirm:'Confirm order',phone:'Enter phone',address:'Enter address',delivery:'Delivery'}
 };
 function setLang(l){
-lang=l;
-document.getElementById('btn-ru').classList.remove('active');
-document.getElementById('btn-uz').classList.remove('active');
-document.getElementById('btn-en').classList.remove('active');
-document.getElementById('btn-'+l).classList.add('active');
-renderProducts();
+  lang=l;
+  document.getElementById('btn-ru').classList.remove('active');
+  document.getElementById('btn-uz').classList.remove('active');
+  document.getElementById('btn-en').classList.remove('active');
+  document.getElementById('btn-'+l).classList.add('active');
+  renderProducts();
 }
 
 /* КАТЕГОРИИ */
@@ -114,34 +113,39 @@ const categories=["Шашлык","Салаты","Первые блюда","На�
 
 /* БЛЮДА */
 const products=[
-{cat:"Шашлык",name:"Шашлык говядина",price:65000},
-{cat:"Шашлык",name:"Шашлык курица",price:45000},
-{cat:"Салаты",name:"Салат Цезарь",price:45000},
-{cat:"Первые блюда",name:"Шурпа",price:50000},
-{cat:"Национальные блюда",name:"Плов",price:55000},
-{cat:"Блюда на гриле",name:"Стейк говяжий",price:95000},
-{cat:"Хлеб",name:"Лепёшка",price:6000},
-{cat:"Напитки",name:"Чай",price:5000}
+  {cat:"Шашлык",name:"Шашлык говядина",price:65000},
+  {cat:"Шашлык",name:"Шашлык курица",price:45000},
+  {cat:"Салаты",name:"Салат Цезарь",price:45000},
+  {cat:"Первые блюда",name:"Шурпа",price:50000},
+  {cat:"Национальные блюда",name:"Плов",price:55000},
+  {cat:"Блюда на гриле",name:"Стейк говяжий",price:95000},
+  {cat:"Хлеб",name:"Лепёшка",price:6000},
+  {cat:"Напитки",name:"Чай",price:5000}
 ];
 
 let cart={},currentCat=categories[0];
 
 /* ТАБЫ */
 function renderTabs(){
-const el=document.getElementById("tabs");
-el.innerHTML="";
-categories.forEach(c=>{el.innerHTML+=`<button class="${c===currentCat?'active':''}" onclick="selectCat('${c}')">${c}</button>`;});
+  const el=document.getElementById("tabs");
+  el.innerHTML="";
+  categories.forEach(c=>{
+    el.innerHTML+=`<button class="${c===currentCat?'active':''}" onclick="selectCat('${c}')">${c}</button>`;
+  });
 }
 function selectCat(c){currentCat=c;renderTabs();renderProducts();}
 
 /* МЕНЮ */
 function renderProducts(){
-const el=document.getElementById("products");
-el.innerHTML="";
-products.filter(p=>p.cat===currentCat).forEach(p=>{
-el.innerHTML+=`<div class="card"><h3>${p.name}</h3><div class="price">${p.price} сум</div>
-<button onclick="add('${p.name}',${p.price})">${texts[lang].add}</button></div>`;
-});
+  const el=document.getElementById("products");
+  el.innerHTML="";
+  products.filter(p=>p.cat===currentCat).forEach(p=>{
+    el.innerHTML+=`<div class="card">
+      <h3>${p.name}</h3>
+      <div class="price">${p.price} сум</div>
+      <button onclick="add('${p.name}',${p.price})">${texts[lang].add}</button>
+    </div>`;
+  });
 }
 
 /* КОРЗИНА */
@@ -149,35 +153,45 @@ function add(n,p){cart[n]?cart[n].qty++:cart[n]={qty:1,price:p};renderCart();sho
 function plus(n){cart[n].qty++;renderCart();}
 function minus(n){cart[n].qty--;if(cart[n].qty<=0)delete cart[n];renderCart();}
 function renderCart(){
-const el=document.getElementById("cartItems");el.innerHTML="";let total=0;
-for(let n in cart){total+=cart[n].qty*cart[n].price;
-el.innerHTML+=`<div><span>${n} × ${cart[n].qty}</span><span class="qty"><button onclick="minus('${n}')">−</button><button onclick="plus('${n}')">+</button></span></div>`;}
-document.getElementById("total").innerText=total;
+  const el=document.getElementById("cartItems");el.innerHTML="";
+  let total=0;
+  for(let n in cart){total+=cart[n].qty*cart[n].price;
+    el.innerHTML+=`<div><span>${n} × ${cart[n].qty}</span>
+    <span class="qty">
+      <button onclick="minus('${n}')">−</button>
+      <button onclick="plus('${n}')">+</button>
+    </span></div>`;
+  }
+  document.getElementById("total").innerText=total;
 }
 
 /* ТОАСТ */
 function showToast(){const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1200);}
 
 /* ОФОРМЛЕНИЕ */
-function openConfirm(){if(!Object.keys(cart).length){alert(texts[lang].empty);return;}
-document.getElementById("menu").style.display="none";document.getElementById("confirm").style.display="block";renderConfirm();}
+function openConfirm(){
+  if(!Object.keys(cart).length){alert(texts[lang].empty);return;}
+  document.getElementById("menu").style.display="none";
+  document.getElementById("confirm").style.display="block";
+  renderConfirm();
+}
 function back(){document.getElementById("confirm").style.display="none";document.getElementById("menu").style.display="block";}
 function renderConfirm(){
-let el=document.getElementById("confirmItems");el.innerHTML="";let total=0;
-for(let n in cart){el.innerHTML+=`<div>${n} × ${cart[n].qty}</div>`;total+=cart[n].qty*cart[n].price;}
-document.getElementById("confirmTotal").innerText=total;
+  const el=document.getElementById("confirmItems");el.innerHTML="";
+  let total=0;
+  for(let n in cart){el.innerHTML+=`<div>${n} × ${cart[n].qty}</div>`;total+=cart[n].qty*cart[n].price;}
+  document.getElementById("confirmTotal").innerText=total;
 }
 
 /* ОТПРАВКА */
 function sendOrder(){
-const phone=document.getElementById("phone").value;
-const address=document.getElementById("address").value;
-if(!phone){alert(texts[lang].phone);return;}
-if(!address){alert(texts[lang].address);return;}
-const items = Object.keys(cart).map(name=>({name,qty:cart[name].qty,price:cart[name].price}));
-const total = items.reduce((sum,i)=>sum+i.qty*i.price,0);
-
-tg.sendData(JSON.stringify({phone,address,delivery_type:document.getElementById("deliveryType").value,items,total}));
+  const phone=document.getElementById("phone").value;
+  const address=document.getElementById("address").value;
+  if(!phone){alert(texts[lang].phone);return;}
+  if(!address){alert(texts[lang].address);return;}
+  const items = Object.keys(cart).map(name=>({name,qty:cart[name].qty,price:cart[name].price}));
+  const total = items.reduce((sum,i)=>sum+i.qty*i.price,0);
+  tg.sendData(JSON.stringify({phone,address,delivery_type:document.getElementById("deliveryType").value,items,total}));
 }
 
 /* ИНИЦИАЛИЗАЦИЯ */
